@@ -1,21 +1,20 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import helmet from 'helmet'
-//import { ValidationPipe } from '@nestjs/common'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
-  app.use(helmet())
+  app.use(helmet({ crossOriginResourcePolicy: false }))
+  app.use(cookieParser())
   app.enableCors({
-    origin: process.env.CORS_ORIGIN?.split(',') ?? ['http://localhost:3000'],
+    origin: process.env.FRONTEND_URL,
     credentials: true
   })
 
-  //app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
-
-  const port = Number(process.env.APP_PORT ?? 3000)
+  const port = process.env.APP_PORT ?? 4000
   await app.listen(port)
-  console.log(`TOBI API on http://localhost:${port}`)
+  console.log(`TOBI API on http://127.0.0.1:${port}`)
 }
 bootstrap()
